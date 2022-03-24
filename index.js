@@ -1,21 +1,25 @@
 // Select element
 const svg = d3.select("svg");
 
-d3.json("planets.json").then((data) => {
-  const circle = svg.selectAll("circle").data(data);
+d3.json("menu.json").then((data) => {
 
-  // add attr to circle
-  circle
-    .attr("cy", 400)
-    .attr("cx", (d) => d.distance)
-    .attr("r", (d) => d.radius)
-    .attr("fill", (d) => d.fill);
+  // Linear Scale Declare
+  const y = d3.scaleLinear().domain([0, 1000]).range([0, 500]);
 
-  circle
+  // join data to rect
+  const rects = svg.selectAll("rect").data(data);
+
+  rects
+    .attr("width", 50)
+    .attr("height", (d) => y(d.orders))
+    .attr("fill", (d) => "orange")
+    .attr("x", (d, i) => i * 70);
+
+  rects
     .enter()
-    .append("circle")
-    .attr("cy", 200)
-    .attr("cx", (d) => d.distance)
-    .attr("r", (d) => d.radius)
-    .attr("fill", (d) => d.fill);
+    .append("rect")
+    .attr("width", 50)
+    .attr("height", (d) => y(d.orders))
+    .attr("fill", (d) => "orange")
+    .attr("x", (d, i) => i * 70);
 });
