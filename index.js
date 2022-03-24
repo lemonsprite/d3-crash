@@ -1,35 +1,13 @@
-const canvas = d3.select('#canvas')
+const data = [
+    {
+        width: 200, height: 100, fill: 'red'
+    }
+]
 
-const svg = canvas.append('svg')
-.attr('width', 1000)
-.attr('height', 1000)
+const svg = d3.select('svg')
 
-const g = svg.append('g')
-.attr('transform', 'translate(50,100)')
-
-g.append('rect')
-.attr('width',50)
-.attr('height',50)
-.attr('x',10)
-.attr('y',10)
-.attr('fill','grey')
-
-g.append('circle')
-.attr('cx',100)
-.attr('cy',50)
-.attr('r',20)
-.attr('fill','red')
-
-g.append('line')
-.attr('x1',130)
-.attr('y1',50)
-.attr('x2',200)
-.attr('y2',50)
-.attr('stroke','red')
-
-svg.append('text')
-.attr('x',20)
-.attr('y',200)
-.attr('fill','grey')
-.text('helo')
-.style('font-family', 'arial')
+const rect = svg.select('rect')
+.data(data)
+.attr('width', (d,i,n) => d.width)
+.attr('height', (d) => d.height)
+.attr('fill', (d) => d.fill)
