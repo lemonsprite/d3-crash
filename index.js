@@ -9,5 +9,9 @@ const svg = d3.select('svg')
 const rect = svg.select('rect')
 .data(data)
 .attr('width', (d,i,n) => d.width)
-.attr('height', (d) => d.height)
-.attr('fill', (d) => d.fill)
+.attr('height', d => d.height)
+.attr('fill', d => d.fill)
+
+
+// Arrow Function refer to window element
+// Arrow Function refer to element that selected
