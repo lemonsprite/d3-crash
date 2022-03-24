@@ -16,11 +16,17 @@ const m = {
 const graphWidth = 600 - m.left - m.right;
 const graphHeight = 600 - m.top - m.bottom;
 
-const graph = svg.append('g')
-.attr('width', graphWidth)
-.attr('height', graphHeight)
-.attr('transform',`translate(${m.left},${m.top})`)
+const graph = svg
+  .append("g")
+  .attr("width", graphWidth)
+  .attr("height", graphHeight)
+  .attr("transform", `translate(${m.left},${m.top})`);
 
+const xAxisGroup = graph
+  .append("g")
+  .attr("transform", `translate(0, ${graphHeight})`);
+
+const yAxisGroup = graph.append("g");
 
 d3.json("menu.json").then((data) => {
   // Get minimum value in data
@@ -32,7 +38,7 @@ d3.json("menu.json").then((data) => {
   const y = d3
     .scaleLinear()
     .domain([0, d3.max(data, (d) => d.orders)])
-    .range([0, 500]);
+    .range([graphHeight, 0]);
 
   // Band Scale Declare
   const x = d3
@@ -47,15 +53,23 @@ d3.json("menu.json").then((data) => {
 
   rects
     .attr("width", x.bandwidth)
-    .attr("height", (d) => y(d.orders))
-    .attr("fill", (d) => "orange")
+    .attr("height", (d) => graphHeight - y(d.orders))
+    .attr("fill", "orange")
     .attr("x", (d) => x(d.name));
 
   rects
     .enter()
     .append("rect")
     .attr("width", x.bandwidth)
-    .attr("height", (d) => y(d.orders))
-    .attr("fill", (d) => "orange")
-    .attr("x", (d) => x(d.name));
+    .attr("height", (d) => graphHeight - y(d.orders))
+    .attr("fill", "orange")
+    .attr("x", (d) => x(d.name))
+    .attr('y', d => y(d.orders))
+
+  // create and Calls Axs
+  const xAxis = d3.axisBottom(x);
+  const yAxis = d3.axisLeft(y);
+
+  xAxisGroup.call(xAxis);
+  yAxisGroup.call(yAxis);
 });
