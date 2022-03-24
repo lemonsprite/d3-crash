@@ -1,12 +1,12 @@
 const data = [
-    {
-        width: 200, height: 100, fill: 'red'
-    }
+    {width: 200, height: 100, fill: 'red'},
+    {width: 100, height: 60, fill: 'white'},
+    {width: 50, height: 30, fill: 'blue'},
 ]
 
 const svg = d3.select('svg')
 
-const rect = svg.select('rect')
+const rect = svg.selectAll('rect')
 .data(data)
 .attr('width', (d,i,n) => d.width)
 .attr('height', d => d.height)
