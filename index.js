@@ -46,8 +46,14 @@ xAxisGroup
   .attr("text-anchor", "end")
   .attr("fill", "pink");
 
+
+
+
 // Algoritma Update Chart / Realtime Chart
 const update = (data) => {
+  const t = d3.transition().duration(500)
+
+
   // 1. Update Scale & Domain
   y.domain([0, d3.max(data, (d) => d.orders)]);
   x.domain(data.map((i) => i.name));
@@ -63,9 +69,9 @@ const update = (data) => {
     .attr("width", x.bandwidth)
     .attr("fill", "orange")
     .attr("x", (d) => x(d.name))
-    .transition().duration(500)
-      .attr("height", (d) => graphHeight - y(d.orders))
-      .attr("y", (d) => y(d.orders));
+    // .transition()
+    //   .attr("height", (d) => graphHeight - y(d.orders))
+    //   .attr("y", (d) => y(d.orders));
 
   rects
     .enter()
@@ -75,6 +81,7 @@ const update = (data) => {
     .attr("fill", "orange")
     .attr("x", (d) => x(d.name))
     .attr("y", graphHeight)
+    .merge(rects)
     .transition().duration(500)
       .attr("y", (d) => y(d.orders))
       .attr("height", (d) => graphHeight - y(d.orders));
@@ -86,7 +93,7 @@ const update = (data) => {
 var data = [];
 db.collection("dishes").onSnapshot((res) => {
   res.docChanges().forEach((d) => {
-    console.log(d);
+    // console.log(d);
     const doc = { ...d.doc.data(), id: d.doc.id };
 
     switch (d.type) {
@@ -95,7 +102,8 @@ db.collection("dishes").onSnapshot((res) => {
         break;
       case "modified":
         const i = data.findIndex((x) => x.id == doc.id);
-        data[x] = doc;
+        data[i] = doc;
+        // console.log(data)
         break;
       case "removed":
         data = data.filter((x) => x.id !== doc.id);
