@@ -46,13 +46,9 @@ xAxisGroup
   .attr("text-anchor", "end")
   .attr("fill", "pink");
 
-
-
-
 // Algoritma Update Chart / Realtime Chart
 const update = (data) => {
-  const t = d3.transition().duration(500)
-
+  const t = d3.transition().duration(1500);
 
   // 1. Update Scale & Domain
   y.domain([0, d3.max(data, (d) => d.orders)]);
@@ -68,21 +64,21 @@ const update = (data) => {
   rects
     .attr("width", x.bandwidth)
     .attr("fill", "orange")
-    .attr("x", (d) => x(d.name))
-    // .transition()
-    //   .attr("height", (d) => graphHeight - y(d.orders))
-    //   .attr("y", (d) => y(d.orders));
+    .attr("x", (d) => x(d.name));
+  // .transition()
+  //   .attr("height", (d) => graphHeight - y(d.orders))
+  //   .attr("y", (d) => y(d.orders));
 
   rects
     .enter()
     .append("rect")
-    .attr("width", x.bandwidth)
     .attr("height", 0)
     .attr("fill", "orange")
     .attr("x", (d) => x(d.name))
     .attr("y", graphHeight)
     .merge(rects)
-    .transition().duration(500)
+    .transition(t)
+      .attrTween("width", widthTween)
       .attr("y", (d) => y(d.orders))
       .attr("height", (d) => graphHeight - y(d.orders));
 
@@ -116,3 +112,11 @@ db.collection("dishes").onSnapshot((res) => {
 
   update(data);
 });
+
+const widthTween = (t) => {
+  let i = d3.interpolate(0, x.bandwidth());
+
+  return function (x) {
+    return i(x);
+  };
+};
