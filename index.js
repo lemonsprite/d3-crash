@@ -48,6 +48,9 @@ xAxisGroup
 
 // Algoritma Update Chart / Realtime Chart
 const update = (data) => {
+  // Refaktor transisi
+  const t = d3.transition().duration(1500);
+
   // 1. Update Scale & Domain
   y.domain([0, d3.max(data, (d) => d.orders)]);
   x.domain(data.map((i) => i.name));
@@ -62,20 +65,21 @@ const update = (data) => {
   rects
     .attr("width", x.bandwidth)
     .attr("fill", "orange")
-    .attr("x", (d) => x(d.name))
-    .transition().duration(500)
-      .attr("height", (d) => graphHeight - y(d.orders))
-      .attr("y", (d) => y(d.orders));
+    .attr("x", (d) => x(d.name));
+  // .transition()
+  //   .attr("height", (d) => graphHeight - y(d.orders))
+  //   .attr("y", (d) => y(d.orders));
 
   rects
     .enter()
     .append("rect")
-    .attr("width", x.bandwidth)
     .attr("height", 0)
     .attr("fill", "orange")
     .attr("x", (d) => x(d.name))
     .attr("y", graphHeight)
-    .transition().duration(500)
+    .merge(rects)
+    .transition(t)
+      .attrTween("width", widthTween)
       .attr("y", (d) => y(d.orders))
       .attr("height", (d) => graphHeight - y(d.orders));
 
@@ -86,7 +90,7 @@ const update = (data) => {
 var data = [];
 db.collection("dishes").onSnapshot((res) => {
   res.docChanges().forEach((d) => {
-    console.log(d);
+    // console.log(d);
     const doc = { ...d.doc.data(), id: d.doc.id };
 
     switch (d.type) {
@@ -95,7 +99,8 @@ db.collection("dishes").onSnapshot((res) => {
         break;
       case "modified":
         const i = data.findIndex((x) => x.id == doc.id);
-        data[x] = doc;
+        data[i] = doc;
+        // console.log(data)
         break;
       case "removed":
         data = data.filter((x) => x.id !== doc.id);
@@ -108,3 +113,12 @@ db.collection("dishes").onSnapshot((res) => {
 
   update(data);
 });
+
+// Manipulasi chart menggunakan tween
+const widthTween = (t) => {
+  let i = d3.interpolate(0, x.bandwidth());
+
+  return function (x) {
+    return i(x);
+  };
+};
