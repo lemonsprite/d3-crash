@@ -48,6 +48,7 @@ xAxisGroup
 
 // Algoritma Update Chart / Realtime Chart
 const update = (data) => {
+  // Refaktor transisi
   const t = d3.transition().duration(1500);
 
   // 1. Update Scale & Domain
@@ -113,6 +114,7 @@ db.collection("dishes").onSnapshot((res) => {
   update(data);
 });
 
+// Manipulasi chart menggunakan tween
 const widthTween = (t) => {
   let i = d3.interpolate(0, x.bandwidth());
 
