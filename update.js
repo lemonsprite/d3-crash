@@ -9,7 +9,3 @@ const widthTween = (data) => {
 
     rects.enter().append('rect').attr()
 }
-
-export default {
-    widthTween
-}
